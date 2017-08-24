@@ -1,0 +1,719 @@
+{
+  "metadata": {
+    "language_info": {
+      "file_extension": ".py",
+      "nbconvert_exporter": "python",
+      "mimetype": "text/x-python",
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "pygments_lexer": "ipython3",
+      "name": "python",
+      "version": "3.6.1"
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    }
+  },
+  "nbformat_minor": 1,
+  "cells": [
+    {
+      "execution_count": null,
+      "metadata": {
+        "collapsed": true,
+        "_uuid": "3a71d262cf9e3581c9080913337b7fd618c751d0"
+      },
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "import seaborn as sns\n",
+        "\n",
+        "import matplotlib.pyplot as plt\n",
+        "%matplotlib inline"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_cell_guid": "55b2cb8d-e0c6-409e-975e-8cd69aeadfc1",
+        "collapsed": true,
+        "_uuid": "56c4d5f681e1b58c0f8cfcebdf9009d5c9ed4c58"
+      },
+      "source": [
+        "data = pd.read_csv('../input/auto-mpg.csv')"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "3bcd3ca074b031b980c81e866837d311933ea56d"
+      },
+      "source": [
+        "## About the Data"
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "metadata": {
+        "_uuid": "301b9c084833440a1a559eced4cbd4e74976ea12"
+      },
+      "source": [
+        "CSV source: https://www.kaggle.com/uciml/autompg-dataset\n",
+        "\n",
+        "Can also be found on the UCI Machine Learning Repository\n",
+        "\n",
+        "**From UCI ML Repository**\n",
+        "\n",
+        "This dataset was taken from the StatLib library which is maintained at Carnegie Mellon University. The dataset was used in the 1983 American Statistical Association Exposition.\n",
+        "\n",
+        "Data Set Information:\n",
+        "\n",
+        "This dataset is a slightly modified version of the dataset provided in the StatLib library. In line with the use by Ross Quinlan (1993) in predicting the attribute \"mpg\", 8 of the original instances were removed because they had unknown values for the \"mpg\" attribute. The original dataset is available in the file \"auto-mpg.data-original\". \n",
+        "\n",
+        "\"The data concerns city-cycle fuel consumption in miles per gallon, to be predicted in terms of 3 multivalued discrete and 5 continuous attributes.\" (Quinlan, 1993)"
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "metadata": {
+        "_uuid": "bc2ae6c44d7818731de2772ed7b11d6b08d61710"
+      },
+      "source": [
+        "## Data Dictionary\n",
+        "|Attribute|Description|\n",
+        "|-|-|\n",
+        "|mpg|Miles per gallon. Continuous variable|\n",
+        "|cylinders|Number of cylinders in the engine|\n",
+        "|displacement|Total swept volume displacement of engine through 1 cycle (Commonly used in cm<sup>3</sup>)|\n",
+        "|horsepower|Unit of power. Often abbreviated as hp. 1 hp is equivalent to around 750 watts|\n",
+        "|weight|Weight of the car, in pounds|\n",
+        "|acceleration|Assumed to be the time it takes for the vehicle to accelerate from 0 to 60 miles per hour (mph)|\n",
+        "|model year|Year of manufacture|\n",
+        "|origin|1 = North America. 2 = Europe, 3 = Japan/Asia|\n",
+        "|car name|Make and model of the car|"
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "metadata": {
+        "_uuid": "14c6ced29ee4be312b95c02785dbcd2661054cc0"
+      },
+      "source": [
+        "### Descriptive Stats & Sanity Check"
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "2cf150e030fa8292712955c7c4a756132685e332"
+      },
+      "source": [
+        "data.head()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "628dc27b487608a5688ac0f8fd2a4371633f68df"
+      },
+      "source": [
+        "data.shape"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": true,
+        "_uuid": "3f8f84b3e46a53de338ccb622958bc8c7d86c902"
+      },
+      "source": [
+        "data.info()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "7feeb38c940f4bf177b824a62d090bb1e1aff2db"
+      },
+      "source": [
+        "Horsepower is regarded as an object. Will check later"
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "9b0d16fb346de54dd2d56bf20032c688c3b89318"
+      },
+      "source": [
+        "data.describe()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": true,
+        "_uuid": "004d030fa1735ffa8599fdd495e7e49174f4446c"
+      },
+      "source": [
+        "# Check for any null values\n",
+        "data.isnull().any()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "c67dff99b69c5fbfef78d5d063c13cc025400fc3"
+      },
+      "source": [
+        "## Data Transformation and Cleaning"
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "collapsed": true,
+        "_uuid": "eb0dbffabcce2e17b915a4413214a38b4e02058c"
+      },
+      "source": [
+        "# Splits car name in to manufacturer and model\n",
+        "data['manufacturer'],data['model']=data['car name'].str.split(' ',1).str"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "collapsed": true,
+        "_uuid": "ea24e22371ca267d1dbabd4a7b25d686acf64f98"
+      },
+      "source": [
+        "# Change it so that the model year corresponds with the appropriate year in the 1900\n",
+        "data['model year']=1900+data['model year']"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": true,
+        "_uuid": "b98f9f2a381d09c4ccfdcd60a37fe53bc152f74d"
+      },
+      "source": [
+        "# Validation of above transformations\n",
+        "data.sample(5)"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "d07a0b1433bfdcafb970b1e76b7fdaaf87a9a028"
+      },
+      "source": [
+        "# Check for NaNs after the transformation\n",
+        "data.isnull().any()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "17a41b47911b31eda2e1267dba7d1016f306697b"
+      },
+      "source": [
+        "# Hunting the null value\n",
+        "data_null = data[data.isnull().any(axis=1)]\n",
+        "print(data_null)"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "3762b6643bb5f685618b7c1ee4c399fb2b069ac2"
+      },
+      "source": [
+        "2 null values occurred after the slicing of the car name - both by Subaru albeit in other years.\n",
+        "\n",
+        "The car models does not have any major effect upon any future work, so they'll be left in. After all, mpg, cylinders, displacement etc are more important to future ML algorithms than the model."
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "14bc2bc0340b7f630fae36e1293d171ada63dff3"
+      },
+      "source": [
+        "# Look at unique manufacturer names\n",
+        "orig_1_manufacturer = set() # Blank sets\n",
+        "orig_2_manufacturer = set() # Blank sets\n",
+        "orig_3_manufacturer = set() # Blank sets\n",
+        "\n",
+        "for row in data.loc[data.origin == 1].manufacturer:\n",
+        "    orig_1_manufacturer.add(row)\n",
+        "    \n",
+        "for row in data.loc[data.origin == 2].manufacturer:\n",
+        "    orig_2_manufacturer.add(row)\n",
+        "    \n",
+        "for row in data.loc[data.origin == 3].manufacturer:\n",
+        "    orig_3_manufacturer.add(row)\n",
+        "\n",
+        "print(\"North American manufacturers\")\n",
+        "print(orig_1_manufacturer)\n",
+        "print(\"\\nEuropean manufacturers\")\n",
+        "print(orig_2_manufacturer)\n",
+        "print(\"\\nAsian\\\\Japanese manufacturers\")\n",
+        "print(orig_3_manufacturer)"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "a441acbc7824321cb332301efa3af9c0c3e33997"
+      },
+      "source": [
+        "For Origin == 1, we see a spelling error, where 'chevrolet' was entered as 'chevroelt'. There also is this 'hi' brand, which is new.\n",
+        "\n",
+        "For Origin 2, 'vw' pops out. As VW is the standard abbreviation for Volkswagen, it stands to reason that it was incorrectly labeled. Another incorrect spelling of vokswagen can also be seen.\n",
+        "\n",
+        "For Origin 3, mazda was incorrectly entered as maxda. Toyouta should be toyota.\n",
+        "In summary, three spelling errors to take care of."
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "collapsed": true,
+        "_uuid": "fdedadb9d3e00c1b4b69a29675fa9ca0258181b0"
+      },
+      "source": [
+        "# Create a map of incorrect spellings\n",
+        "incorrect_to_correct = {'maxda':'mazda','vw':'volkswagen','chevroelt':'chevrolet', 'toyouta':'toyota','vokswagen':\n",
+        "                       'volkswagen'}\n",
+        "\n",
+        "# Replace the incorrect values with the map\n",
+        "data.replace({'manufacturer':incorrect_to_correct},inplace=True)"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "979a505e55ce763cfa3501970d9af267b83e9c52"
+      },
+      "source": [
+        "# Let's double check on the incorrect spellings\n",
+        "print(data[data['manufacturer'] == 'maxda'])\n",
+        "print(data[data['manufacturer'] == 'vw'])\n",
+        "print(data[data['manufacturer'] == 'chevroelt'])\n",
+        "print(data[data['manufacturer'] == 'toyouta'])\n",
+        "print(data[data['manufacturer'] == 'vokswagen'])"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "7dba28d78a632d2bb560527456cb5f78079839f9"
+      },
+      "source": [
+        "Empty dataframes means that the spellings are now correct.\n",
+        "\n",
+        "One other interesting note is the use of Chevy and Chevrolet as car manufacturers. Historically, Chevrolet cars have also been referred to as Chevy colloquially. As such, this will be corrected in order for future work."
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "collapsed": true,
+        "_uuid": "5aeb7eadd1b14685d2c680e7c966382a59e5d113"
+      },
+      "source": [
+        "incorrect_to_correct = {'chevy':'chevrolet'}\n",
+        "data.replace({'manufacturer':incorrect_to_correct},inplace=True)"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": false,
+        "_uuid": "8193e2df351b15fcc84775cb5e4804b67ea4071e"
+      },
+      "source": [
+        "print(data[data['manufacturer'] == 'chevy'])"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": true,
+        "_uuid": "29522f9112e3c04682bed292123fbc2debbe6295"
+      },
+      "source": [
+        "# Let's go a little deeper than make and into models\n",
+        "# Count the entries by manufacturer\n",
+        "orig_1_model = set() # Blank sets\n",
+        "orig_2_model = set() # Blank sets\n",
+        "orig_3_model = set() # Blank sets\n",
+        "\n",
+        "for row in data.loc[data.origin == 1].model:\n",
+        "    orig_1_model.add(row)\n",
+        "    \n",
+        "for row in data.loc[data.origin == 2].model:\n",
+        "    orig_2_model.add(row)\n",
+        "    \n",
+        "for row in data.loc[data.origin == 3].model:\n",
+        "    orig_3_model.add(row)\n",
+        "\n",
+        "print(\"North American modelss\")\n",
+        "print(orig_1_model)\n",
+        "print(\"\\nEuropean modelss\")\n",
+        "print(orig_2_model)\n",
+        "print(\"\\nAsian\\\\Japanese models\")\n",
+        "print(orig_3_model)"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": false,
+        "_uuid": "354bbc11aa9e776dd2c1efc5ed450e0642d74386"
+      },
+      "source": [
+        "# Actual numbers of model by region\n",
+        "print(\"North American manufacturers\")\n",
+        "print(len(orig_1_model))\n",
+        "print(\"\\nEuropean manufacturers\")\n",
+        "print(len(orig_2_model))\n",
+        "print(\"\\nAsian\\\\Japanese manufacturers\")\n",
+        "print(len(orig_3_model))"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "ef2d2d95d870d485c73d0641ba6bfc5d2f2849da"
+      },
+      "source": [
+        "Considering that the dataframe contains more North American manufacturers than other regions, it stands to reason that there will be more North American models. This can be observed in the next section, which is Exploratory Data Analysis."
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": true,
+        "_uuid": "1162cb8517548c1fcf5e3fdca008485f90635f14"
+      },
+      "source": [
+        "# Here we can see that horsepower is regarded as an object when it should be an integer, or float.\n",
+        "data.info()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "4426277202c32bd795a43588210573a88dc7f0e8"
+      },
+      "source": [
+        "# All horsepower values should be floats or integers\n",
+        "\n",
+        "# Find all non-numerical values in horsepower\n",
+        "data[data['horsepower'].str.contains(u'\\D')]"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "5e644370181c166e1268ccbea17994c0cbf189e4"
+      },
+      "source": [
+        "All values here are according to www.automobile-catalog.com\n",
+        "\n",
+        "According to the Automobile Catalog, each car had several versions/submodels available. As such, we attempted to match the listed charastics here (mpg, displacement, weight) with Automobile Catalog entries.\n",
+        "\n",
+        "|Row | <center>Car Name</center> | <center>Horsepower (hp)</center> |\n",
+        "|-|-|\n",
+        "|32|<center>Ford Pinto 1971</center>|<center>75</center>|\n",
+        "|126|<center>Ford Maverick 1974</center>|<center>85</center>|\n",
+        "|330|<center>Renault Lecar Deluxe 1980</center>|<center>51</center>|\n",
+        "|336|<center>Ford Mustang Cobra 1980</center>|<center>120</center>|\n",
+        "|354|<center>Renault 19i 1981</center>|<center>74</center>|\n",
+        "|374|<center>AMC Concord dl 1982</center>|<center>82</center>|\n",
+        "\n",
+        "There are some conflicts with the reported values, as other websites may have higher or lower hp listed. If there was no better match between 2-3 listings, an average value was aggregated."
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": false,
+        "_uuid": "659ffe9e8f8b8e2096469242156807a8d6526110"
+      },
+      "source": [
+        "# Setting the value for Ford Pinto 1971\n",
+        "data.set_value(32,'horsepower',75)\n",
+        "# Setting the value for Ford Maverick 1974\n",
+        "data.set_value(126,'horsepower',85)\n",
+        "# Setting the value for Renault Lecar Deluxe 1980\n",
+        "data.set_value(330,'horsepower',51)\n",
+        "# Setting the value for Ford Mustang Cobra 1980\n",
+        "data.set_value(336,'horsepower',120)\n",
+        "# Setting the value for Renault 19i 1981\n",
+        "data.set_value(354,'horsepower',74)\n",
+        "# Setting the value for AMC Concord dl 1982\n",
+        "data.set_value(374,'horsepower',82)\n",
+        "\n",
+        "print(\"Checking the Ford Pinto data\")\n",
+        "print(data.loc[32])\n",
+        "print(\"\\nChecking the AMC Concord data\")\n",
+        "print(data.loc[374])"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "030c37714431517a646806a9434c3afe79c84bea"
+      },
+      "source": [
+        "# Cast horsepower to integer\n",
+        "data['horsepower'] = data.horsepower.astype(int)"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "47ddf54d2af44414adc84ce3cec0bfbc3250079d"
+      },
+      "source": [
+        "# Confirmation\n",
+        "data.info()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "9b83e971590de0d46fda8082c4149f23eda4fafc"
+      },
+      "source": [
+        "## EDA\n",
+        "\n",
+        "Let's take a look at car model counts by region."
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": true,
+        "_uuid": "ee52aa4a04db320fc359194fd0994ae603a212ce"
+      },
+      "source": [
+        "plt.hist(data['origin'])\n",
+        "plt.xlabel('Region')\n",
+        "plt.ylabel('Count')\n",
+        "plt.title(u'Counts of models by region')\n",
+        "plt.xticks(range(1,4))\n",
+        "plt.show()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "194266b00fee4523b57f147d6e92c76e1d0568fe"
+      },
+      "source": [
+        "There is a disproportionate number of cars from North America, although it stands to reason as the study was originally conducted in North America, along with more car manufacturers in North America.\n",
+        "\n",
+        "Given the number of car models, producing a histogram of car models will not be very beneficial. "
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "scrolled": false,
+        "_uuid": "8dc13e8b11d5058594fb10443f9be507405a898b"
+      },
+      "source": [
+        "# Maybe cars by year next?\n",
+        "plt.hist(data['model year'])\n",
+        "plt.xlabel('Year')\n",
+        "plt.ylabel('Count')\n",
+        "plt.title(u'Counts of models by year')\n",
+        "plt.show()"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "_uuid": "03a39f5d4851500becdde2fdd3aed91fea25c686"
+      },
+      "source": [
+        "Here, we are observing the various other continuous variables provided in the dataframe."
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "567763a23677d872a25f0a5a4b863958433db2d8"
+      },
+      "source": [
+        "# Generate a feature list to iterate in a for loop\n",
+        "feat_list = data.columns.tolist()\n",
+        "# These columns are dropped from the feature list\n",
+        "# Some are categorical, some cover a range of values that will be similar\n",
+        "feat_list.remove('manufacturer')\n",
+        "feat_list.remove('model')\n",
+        "feat_list.remove('model year')\n",
+        "feat_list.remove('origin')\n",
+        "feat_list.remove('car name')\n",
+        "print(feat_list)"
+      ],
+      "cell_type": "code",
+      "outputs": []
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "_uuid": "34b60c148f38beb5fbf3ffe81f29d32a5bfdfe52"
+      },
+      "source": [
+        "# Run a for loop for histograms\n",
+        "\n",
+        "# # Split it into 3 dataframes\n",
+        "# data_na = data[data['origin']==1]\n",
+        "# data_eu = data[data['origin']==2]\n",
+        "# data_asia = data[data['origin']==3]\n",
+        "\n",
+        "# Divide the dataframe into 3 traces by region\n",
+        "# Plotly doesn't work, have to use Matplotlib\n",
+        "for cols in feat_list:\n",
+        "    print(cols)\n",
+        "    x0 = data[data[\"origin\"] == 1][cols].values\n",
+        "    x1 = data[data['origin']==2][cols].values\n",
+        "    x2 = data[data['origin']==3][cols].values\n",
+        "    \n",
+        "    plt.hist(x0, alpha=0.5,label='NA')\n",
+        "    plt.hist(x1, alpha=0.5,label='EU')\n",
+        "    plt.hist(x2, alpha=0.5,label='AS')\n",
+        "    plt.legend(loc='upper right')\n",
+        "    \n",
+        "    plt.show()"
+      ],
+      "cell_type": "code",
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": "North American manufacturers\n{'buick', 'chrysler', 'chevy', 'ford', 'plymouth', 'oldsmobile', 'pontiac', 'amc', 'chevroelt', 'hi', 'dodge', 'capri', 'chevrolet', 'mercury', 'cadillac'}\n\nEuropean manufacturers\n{'bmw', 'mercedes-benz', 'renault', 'opel', 'peugeot', 'vokswagen', 'volkswagen', 'saab', 'audi', 'volvo', 'vw', 'fiat', 'triumph', 'mercedes'}\n\nAsian\\Japanese manufacturers\n{'toyota', 'datsun', 'mazda', 'subaru', 'toyouta', 'nissan', 'honda', 'maxda'}\n",
+          "name": "stdout"
+        },
+        {
+          "output_type": "display_data",
+          "transient": {},
+          "data": {
+            "text/plain": "<matplotlib.figure.Figure at 0x7f5ccf282cf8>",
+            "image/png": "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\n"
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "collapsed": true,
+        "_uuid": "31c8feebbb7fac3162c481be60e2287caae02fcb"
+      },
+      "source": [
+        "There are some observable trends here. For mpg, North American cars typically are lower than European or Asian models. North America has a larger number of cars with more cylinders, as well as higher displacement. There is a larger range in horsepower, as well as weight. Acceleration, on the other hand, appears to be very similar."
+      ],
+      "cell_type": "markdown",
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "execution_count": null,
+      "metadata": {
+        "collapsed": true,
+        "_uuid": "430b4c5a5e8cd212ce3816edd507a3a0c5b09e24"
+      },
+      "source": [],
+      "cell_type": "code",
+      "outputs": []
+    }
+  ],
+  "nbformat": 4
+}
